@@ -8,7 +8,7 @@ app.use(logfmt.requestLogger());
 app.use (function(req, res, next) {
     var data='';
     req.setEncoding('utf8');
-    req.on('data', function(chunk) { 
+    req.on('data', function(chunk) {
        data += chunk;
     });
     req.on('end', function() {
@@ -21,7 +21,7 @@ app.use (function(req, res, next) {
 var configurations = [
   {
     requestUrl: '/mixpanel/RunCustomSetup',
-    postUrl: 'https://hooks.slack.com/services/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',
+    postUrl: 'https://hooks.slack.com/services/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',
     formatter: function(data) {
       var ret = [];
       try {
@@ -50,7 +50,7 @@ var configurations = [
     }
   }, {
     requestUrl: '/mixpanel/CustomEvent',
-    postUrl: 'https://hooks.slack.com/services/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',
+    postUrl: 'https://hooks.slack.com/services/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',
     formatter: function(data, url) {
       var ret = [];
       var eventName = url.split('/');
@@ -95,7 +95,7 @@ var configurations = [
           var org = event['$properties']['org'];
           var phone = event['$properties']['phone'];
           var timezone = event['$properties']['$timezone'];
-          var payload = {              
+          var payload = {
             attachments: [
               {
                 fallback: name + " @ " + org + " just signed up",
@@ -136,21 +136,21 @@ app.post('/*', function(req, res) {
   var body = req.body;
   var startedRequests = 0;
   var completedRequests = 0;
-  
+
   var doPost = function(item, data) {
     request({url: item.postUrl,
              method: 'POST',
-             json: true, 
+             json: true,
              body: data},
              function(err,httpResponse,body){
-               completedRequests++;               
+               completedRequests++;
                 if (completedRequests == startedRequests) {
                   res.send('OK');
                 }
               });
      startedRequests++;
   };
-  
+
   configurations.filter(function(item) {
     return item.requestUrl === url.substr(0, item.requestUrl.length);
   })
@@ -159,7 +159,7 @@ app.post('/*', function(req, res) {
     console.log('Found formatter');
     if (bodyReformatted) {
        console.log('Reformatting done, will pass the data to the next hook');
-       
+
        if (bodyReformatted instanceof Array) {
          bodyReformatted.forEach(function(postData){
            doPost(item, postData);
